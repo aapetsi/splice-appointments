@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom'
 import { useAppointmentsContext } from '../hooks/useAppointmentContext'
 import AppointmentCard from './AppointmentCard'
+import { useState } from 'react'
 
 const AppointmentList = () => {
   const { appointments } = useAppointmentsContext()
+  const [searchQuery, setSearchQuery] = useState('')
 
-  const AppointmentCards = appointments.map((x) => (
+  const AppointmentCards = searchQuery.length > 0 ? appointments.filter(x => x.coach.toLowerCase().indexOf(searchQuery.toLowerCase()) > -1).map((x) => <AppointmentCard key={x.id} appointment={x} />) : appointments.map((x) => (
     <AppointmentCard key={x.id} appointment={x} />
   ))
   return (
@@ -18,6 +20,16 @@ const AppointmentList = () => {
           >
             <Link to='/new'>Add New Appointment</Link>
           </span>
+      </div>
+      <div className='mb-6'>
+      <input
+            className='shadow appearance-none border rounded w-3/12 py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline'
+            name='date'
+            id='date'
+            type='text'
+            placeholder='Search for Coach'
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
       </div>
       <div className='flex flex-wrap'>{AppointmentCards}</div>
     </div>
